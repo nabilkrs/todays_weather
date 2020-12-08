@@ -1,6 +1,6 @@
-# weather
+# Today's Weather
 
-A new Flutter project.
+Flutter Application Developed by Nabeel Krissane allows you to show weather in specified location.
 
 ## Getting Started
 
