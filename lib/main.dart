@@ -10,7 +10,9 @@ import 'package:weather/model/global.dart';
 import 'package:weather/model/location.dart';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
+const String testDevice = 'G8M9XA1790201750';
 main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -35,10 +37,62 @@ class _HomeState extends State<Home> {
   bool items = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String city = "";
+static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    testDevices: testDevice != null ? <String>[testDevice] : null,
+    nonPersonalizedAds: true,
+    keywords: <String>['foo', 'bar'],
+  );
+
+BannerAd _bannerAd;
+InterstitialAd _interstitialAd;
+
+BannerAd createBannerAd() {
+    return BannerAd(
+        adUnitId: "ca-app-pub-1835500137160582/1298304450",
+      //Change BannerAd adUnitId with Admob ID
+        size: AdSize.banner,
+        targetingInfo: targetingInfo,
+        listener: (MobileAdEvent event) {
+          print("BannerAd $event");
+        });
+  }
+
+  InterstitialAd createInterstitialAd() {
+    return InterstitialAd(
+        adUnitId: 'ca-app-pub-1835500137160582/2419814436',
+      //Change Interstitial AdUnitId with Admob ID
+        targetingInfo: targetingInfo,
+        listener: (MobileAdEvent event) {
+          print("IntersttialAd $event");
+        });
+  }
+
+
+
+
+
+
+
+final appId="ca-app-pub-1835500137160582~7183371746";
+
   @override
   void initState() {
+FirebaseAdMob.instance.initialize(appId: appId);
+    //Change appId With Admob Id
+    _bannerAd = createBannerAd()
+      ..load()
+      ..show();
+
     super.initState();
   }
+ @override
+  void dispose() {
+    _bannerAd.dispose();
+    _interstitialAd.dispose();
+    super.dispose();
+    
+  }
+  
 
   String abcd = "";
   TextEditingController mycontroller = new TextEditingController();
@@ -66,6 +120,8 @@ class _HomeState extends State<Home> {
                   size: 30,
                 ),
                 onPressed: () {
+                  createInterstitialAd()..load()..show();
+                  
                   setState(() {
                     clicked = false;
                     city = "";
@@ -110,13 +166,13 @@ class _HomeState extends State<Home> {
                 ),
               ),
               Positioned(
-                  top: 270,
+                  top: 250,
                   child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 30),
                       width: orth - 60,
                       height: toul - 250,
                       decoration: BoxDecoration(
-                          // border: Border.all(width: 1,color:Colors.grey),
+                           //border: Border.all(width: 1,color:Colors.grey),
                           ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,7 +180,7 @@ class _HomeState extends State<Home> {
                           Visibility(
                             visible: items,
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
+                              padding: const EdgeInsets.only(top: 1),
                               child: Container(
                                   width: orth - 80,
                                   height: 70,
@@ -213,6 +269,7 @@ class _HomeState extends State<Home> {
                                           text:"Couldn't show weather. Make sure your phone has an Internet connection and try again.",
                                         );
                                       } else {
+
                                         clicked = true;
                                         city = "";
                                         items = false;
@@ -228,6 +285,7 @@ class _HomeState extends State<Home> {
                           //Text("$city",style:Theme.of(context).textTheme.headline5),
 
                           SizedBox(height: 70),
+                          
                         ],
                       ))),
               clicked ? Dur.ctrl(mycontroller.text) : Column()
