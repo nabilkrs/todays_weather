@@ -12,7 +12,7 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 
-const String testDevice = 'G8M9XA1790201750';
+const String testDevice = 'A244FF46BB3FEAE0FDA76F3E36987E7A';
 main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -39,8 +39,12 @@ class _HomeState extends State<Home> {
   String city = "";
 static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
     testDevices: testDevice != null ? <String>[testDevice] : null,
-    nonPersonalizedAds: true,
-    keywords: <String>['foo', 'bar'],
+    
+   
+   
+  childDirected: false,
+ 
+    keywords: <String>['games'],
   );
 
 BannerAd _bannerAd;
@@ -49,6 +53,7 @@ InterstitialAd _interstitialAd;
 BannerAd createBannerAd() {
     return BannerAd(
         adUnitId: "ca-app-pub-1835500137160582/1298304450",
+        
       //Change BannerAd adUnitId with Admob ID
         size: AdSize.banner,
         targetingInfo: targetingInfo,
@@ -85,6 +90,7 @@ FirebaseAdMob.instance.initialize(appId: appId);
 
     super.initState();
   }
+
  @override
   void dispose() {
     _bannerAd.dispose();
@@ -92,6 +98,7 @@ FirebaseAdMob.instance.initialize(appId: appId);
     super.dispose();
     
   }
+ 
   
 
   String abcd = "";
