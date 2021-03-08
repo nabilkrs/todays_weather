@@ -13,6 +13,8 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 
 const String testDevice = 'A244FF46BB3FEAE0FDA76F3E36987E7A';
+//50786F15CC4869C9C4BB52BF0BA4DEE4
+//A244FF46BB3FEAE0FDA76F3E36987E7A
 main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -37,24 +39,29 @@ class _HomeState extends State<Home> {
   bool items = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String city = "";
-static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    testDevices: testDevice != null ? <String>[testDevice] : null,
-    
-   
-   
-  childDirected: false,
- 
+
+  void loadbanner() async {
+    _bannerAd = createBannerAd();
+    await _bannerAd.load();
+    _bannerAd.show();
+  }
+
+  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    //testDevices: testDevice != null ? <String>[testDevice] : null,
+
+    childDirected: false,
+
     keywords: <String>['games'],
   );
 
-BannerAd _bannerAd;
-InterstitialAd _interstitialAd;
+  BannerAd _bannerAd;
+  InterstitialAd _interstitialAd;
 
-BannerAd createBannerAd() {
+  BannerAd createBannerAd() {
     return BannerAd(
-        adUnitId: "ca-app-pub-1835500137160582/1298304450",
-        
-      //Change BannerAd adUnitId with Admob ID
+        adUnitId: "ca-app-pub-1835500137160582/4298698850",
+
+        //Change BannerAd adUnitId with Admob ID
         size: AdSize.banner,
         targetingInfo: targetingInfo,
         listener: (MobileAdEvent event) {
@@ -64,47 +71,32 @@ BannerAd createBannerAd() {
 
   InterstitialAd createInterstitialAd() {
     return InterstitialAd(
-        adUnitId: 'ca-app-pub-1835500137160582/2419814436',
-      //Change Interstitial AdUnitId with Admob ID
+        adUnitId: 'ca-app-pub-1835500137160582/4981225139',
+        //Change Interstitial AdUnitId with Admob ID
         targetingInfo: targetingInfo,
         listener: (MobileAdEvent event) {
           print("IntersttialAd $event");
         });
   }
 
-
-
-
-
-
-
-final appId="ca-app-pub-1835500137160582~7183371746";
+  final appId = "ca-app-pub-1835500137160582~7183371746";
 
   @override
-  void initState() {
-FirebaseAdMob.instance.initialize(appId: appId);
-    //Change appId With Admob Id
-    _bannerAd = createBannerAd()
-      ..load()
-      ..show();
-
-    super.initState();
-  }
-
- @override
   void dispose() {
     _bannerAd.dispose();
     _interstitialAd.dispose();
     super.dispose();
-    
   }
- 
-  
 
   String abcd = "";
   TextEditingController mycontroller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    FirebaseAdMob.instance.initialize(appId: appId);
+    
+    //Change appId With Admob Id
+    loadbanner();
+
     final toul = MediaQuery.of(context).size.height;
     final orth = MediaQuery.of(context).size.width;
 
@@ -117,7 +109,7 @@ FirebaseAdMob.instance.initialize(appId: appId);
             "Today's Weather",
             style: TextStyle(fontFamily: 'Tajawal'),
           ),
-          //  elevation: 0,
+          elevation: 0,
           centerTitle: true,
           actions: [
             IconButton(
@@ -127,8 +119,10 @@ FirebaseAdMob.instance.initialize(appId: appId);
                   size: 30,
                 ),
                 onPressed: () {
-                  createInterstitialAd()..load()..show();
-                  
+                  createInterstitialAd()
+                    ..load()
+                    ..show();
+
                   setState(() {
                     clicked = false;
                     city = "";
@@ -179,7 +173,7 @@ FirebaseAdMob.instance.initialize(appId: appId);
                       width: orth - 60,
                       height: toul - 250,
                       decoration: BoxDecoration(
-                           //border: Border.all(width: 1,color:Colors.grey),
+                          //border: Border.all(width: 1,color:Colors.grey),
                           ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -213,15 +207,13 @@ FirebaseAdMob.instance.initialize(appId: appId);
                                         });
                                       },
                                       decoration: InputDecoration(
-
-                                        
-                                        
                                           border: InputBorder.none,
                                           hintStyle: TextStyle(
                                             fontFamily: 'Tajawal',
+                                            decorationStyle:
+                                                TextDecorationStyle.wavy,
                                           ),
                                           hintText: "Enter a city name"),
-                                     
                                     ),
                                   )),
                             ),
@@ -273,10 +265,10 @@ FirebaseAdMob.instance.initialize(appId: appId);
                                           context: context,
                                           type: CoolAlertType.error,
                                           title: "Network Error",
-                                          text:"Couldn't show weather. Make sure your phone has an Internet connection and try again.",
+                                          text:
+                                              "Couldn't show weather. Make sure your phone has an Internet connection and try again.",
                                         );
                                       } else {
-
                                         clicked = true;
                                         city = "";
                                         items = false;
@@ -292,7 +284,6 @@ FirebaseAdMob.instance.initialize(appId: appId);
                           //Text("$city",style:Theme.of(context).textTheme.headline5),
 
                           SizedBox(height: 70),
-                          
                         ],
                       ))),
               clicked ? Dur.ctrl(mycontroller.text) : Column()
@@ -382,9 +373,8 @@ class _DurState extends State<Dur> {
                                             fontSize: 18,
                                             fontFamily: 'Tajawal',
                                             color: Colors.black)),
-                                    TextSpan(text:"\n"),
-
-                                            TextSpan(
+                                    TextSpan(text: "\n"),
+                                    TextSpan(
                                         text: "Localtime : ",
                                         style: TextStyle(
                                             fontSize: 18,
@@ -407,7 +397,7 @@ class _DurState extends State<Dur> {
                                 );
                               }),
                           //********************************* */
-                         
+
                           /***************** */
                           FutureBuilder<Condition>(
                               future: condition,
